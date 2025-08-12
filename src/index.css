@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 260 84% 60%; /* Vibrant violet accent for modern feel */
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -36,7 +36,7 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -53,6 +53,13 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Finshield enhancements */
+    --primary-glow: 222.2 70% 25%;
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(210 40% 99%));
+    --shadow-elegant: 0 10px 30px -12px hsl(var(--accent) / 0.35);
+    --shadow-glow: 0 12px 45px -14px hsl(var(--accent) / 0.55);
   }
 
   .dark {
@@ -74,7 +81,7 @@ All colors MUST be HSL.
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 262 90% 66%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -91,6 +98,13 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Finshield dark tweaks */
+    --primary-glow: 222.2 70% 80%;
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 6%), hsl(222.2 84% 4.9%));
+    --shadow-elegant: 0 10px 30px -12px hsl(var(--accent) / 0.35);
+    --shadow-glow: 0 12px 45px -14px hsl(var(--accent) / 0.6);
   }
 }
 
@@ -101,5 +115,37 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+  .bg-gradient-subtle {
+    background-image: var(--gradient-subtle);
+  }
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+  .story-link {
+    position: relative;
+    display: inline-block;
+  }
+  .story-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    background: hsl(var(--primary));
+    transition: transform 300ms ease;
+  }
+  .story-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
   }
 }

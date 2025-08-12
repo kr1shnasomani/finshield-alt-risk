@@ -1,13 +1,31 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Hero from "@/components/Hero";
+import CreditRiskAnalyzer from "@/components/CreditRiskAnalyzer";
+import { useEffect } from "react";
 
 const Index = () => {
+  useEffect(() => {
+    document.title = "Finshield Credit Risk Engine";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Finshield predicts borrower default risk using alternative data.");
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <main>
+      <Hero />
+      <section className="pb-16 md:pb-24">
+        <div className="container">
+          <CreditRiskAnalyzer />
+        </div>
+      </section>
+      <section id="how-it-works" className="py-12 md:py-16">
+        <div className="container max-w-5xl text-center">
+          <h2 className="text-2xl md:text-3xl font-semibold">How it works</h2>
+          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+            Upload a CSV containing behavioral and transactional signals. Select a user to compute Probability of Default. In production, connect a model API or Supabase Edge function to replace the heuristic with your trained pipeline.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 };
 
