@@ -17,14 +17,18 @@ export const SpeedometerGauge = ({
   size = 120 
 }: SpeedometerGaugeProps) => {
   const data = useMemo(() => {
-    const percentage = Math.min((value / max) * 100, 100);
+    // Ensure values are valid numbers
+    const safeValue = isFinite(value) ? value : 0;
+    const safeMax = isFinite(max) && max > 0 ? max : 1;
+    const percentage = Math.min((safeValue / safeMax) * 100, 100);
     return [
       { value: percentage, fill: "hsl(var(--primary))" },
       { value: 100 - percentage, fill: "hsl(var(--muted))" }
     ];
   }, [value, max]);
 
-  const displayValue = unit === "%" ? (value * 100).toFixed(1) : value.toFixed(2);
+  const safeValue = isFinite(value) ? value : 0;
+  const displayValue = unit === "%" ? (safeValue * 100).toFixed(1) : safeValue.toFixed(2);
   
   return (
     <div className="flex flex-col items-center space-y-2">
