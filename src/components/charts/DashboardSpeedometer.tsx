@@ -22,7 +22,7 @@ export const DashboardSpeedometer = ({
   // Calculate the rotation angle for the needle (180 degrees total)
   const needleAngle = -90 + (percentage / 100) * 180;
   
-  // Determine color based on percentage
+  // Determine color based on percentage (lower is better for risk indicators)
   const getColor = (pct: number) => {
     if (pct <= 33) return { bg: 'bg-green-500', text: 'text-green-600' };
     if (pct <= 66) return { bg: 'bg-yellow-500', text: 'text-yellow-600' };
@@ -102,8 +102,8 @@ export const DashboardSpeedometer = ({
         </svg>
         
         {/* Value display */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-4">
-          <div className={`text-2xl font-bold ${colors.text}`}>
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-2">
+          <div className={`text-xl font-bold ${colors.text} bg-background/80 px-2 py-1 rounded-md shadow-sm`}>
             {displayValue}{unit}
           </div>
         </div>

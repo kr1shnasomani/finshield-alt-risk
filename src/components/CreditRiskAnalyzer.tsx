@@ -297,7 +297,7 @@ const CreditRiskAnalyzer = () => {
                     />
                     <DashboardSpeedometer
                       value={toNumber(selectedRow.geo_variance_score)}
-                      max={10}
+                      max={1}
                       title="Geo-variance Score"
                       unit=""
                       size={160}
@@ -353,15 +353,13 @@ const CreditRiskAnalyzer = () => {
                           {toNumber(selectedRow.months_active)} months
                         </span>
                       </div>
-                      <div className="flex justify-center">
-                        <div className="h-20 w-8 bg-muted rounded-lg overflow-hidden flex flex-col justify-end">
-                          <div 
-                            className="w-full bg-gradient-to-t from-primary to-primary/80 rounded-lg transition-all duration-500"
-                            style={{ 
-                              height: `${Math.min((toNumber(selectedRow.months_active) / Math.max(24, toNumber(selectedRow.months_active) * 1.5)) * 100, 100)}%` 
-                            }}
-                          />
-                        </div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                          style={{ 
+                            width: `${Math.min((toNumber(selectedRow.months_active) / Math.max(24, toNumber(selectedRow.months_active) * 1.5)) * 100, 100)}%` 
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
