@@ -86,26 +86,33 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function computeDatasetStats(rows: UserRow[]) {
-  const avg = (list: number[]) => (list.length ? list.reduce((a, b) => a + b, 0) / list.length : 0);
-  const av = rows.map((r) => toNumber(r.avg_order_value) ?? 0);
-  const ar = rows.map((r) => toNumber(r.avg_recharge_amt) ?? 0);
+  const avg = (list: number[]) => {
+    const validNumbers = list.filter(n => isFinite(n));
+    return validNumbers.length ? validNumbers.reduce((a, b) => a + b, 0) / validNumbers.length : 0;
+  };
+  const av = rows.map((r) => toNumber(r.avg_order_value));
+  const ar = rows.map((r) => toNumber(r.avg_recharge_amt));
   return { meanAOV: avg(av), meanRecharge: avg(ar) };
 }
 
 function computePD(row: UserRow, stats: { meanAOV: number; meanRecharge: number }): number {
-  const direct = toNumber(row.pd_score) ?? toNumber(row.prediction_proba);
-  if (typeof direct === "number") return clamp(direct * (direct <= 1 ? 100 : 1), 0, 100);
+  const direct = toNumber(row.pd_score) || toNumber(row.prediction_proba);
+  if (direct > 0) return clamp(direct * (direct <= 1 ? 100 : 1), 0, 100);
 
-  const delay = toNumber(row.payment_delay_ratio) ?? 0; // 0..1
-  const abandon = toNumber(row.cart_abandonment_rate) ?? 0; // 0..1
-  const geo = toNumber(row.geo_variance_score) ?? 0; // assume 0..10
-  const months = toNumber(row.months_active) ?? 0; // months
-  const aov = toNumber(row.avg_order_value) ?? stats.meanAOV;
-  const recharge = toNumber(row.avg_recharge_amt) ?? stats.meanRecharge;
+  const delay = toNumber(row.payment_delay_ratio);
+  const abandon = toNumber(row.cart_abandonment_rate);
+  const geo = toNumber(row.geo_variance_score);
+  const months = toNumber(row.months_active);
+  const aov = toNumber(row.avg_order_value) || stats.meanAOV || 1000;
+  const recharge = toNumber(row.avg_recharge_amt) || stats.meanRecharge || 500;
+
+  // Ensure stats are valid numbers
+  const safeMeanAOV = isFinite(stats.meanAOV) && stats.meanAOV > 0 ? stats.meanAOV : 1000;
+  const safeMeanRecharge = isFinite(stats.meanRecharge) && stats.meanRecharge > 0 ? stats.meanRecharge : 500;
 
   // Normalize against dataset means
-  const aovFactor = stats.meanAOV ? clamp(1 - aov / (stats.meanAOV * 1.5), 0, 1) : 0.5;
-  const rechargeFactor = stats.meanRecharge ? clamp(1 - recharge / (stats.meanRecharge * 1.5), 0, 1) : 0.5;
+  const aovFactor = clamp(1 - aov / (safeMeanAOV * 1.5), 0, 1);
+  const rechargeFactor = clamp(1 - recharge / (safeMeanRecharge * 1.5), 0, 1);
   const tenureFactor = months < 6 ? 0.25 : months < 12 ? 0.15 : 0.05;
   const geoFactor = clamp(geo / 10, 0, 1);
 
