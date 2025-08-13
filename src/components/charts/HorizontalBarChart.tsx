@@ -1,5 +1,3 @@
-import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts";
-
 interface HorizontalBarChartProps {
   value: number;
   maxValue: number;
@@ -13,19 +11,22 @@ export const HorizontalBarChart = ({
   title, 
   currency = "₹" 
 }: HorizontalBarChartProps) => {
-  // Debug logging
-  console.log(`HorizontalBarChart ${title}:`, { value, maxValue, isValueFinite: isFinite(value), isMaxFinite: isFinite(maxValue) });
-  
   // Comprehensive NaN protection
   const safeValue = (!isNaN(value) && isFinite(value) && value >= 0) ? value : 0;
   const safeMaxValue = (!isNaN(maxValue) && isFinite(maxValue) && maxValue > 0) ? maxValue : Math.max(100, safeValue * 2);
   
-  console.log(`HorizontalBarChart ${title} safe values:`, { safeValue, safeMaxValue });
+  console.log(`HorizontalBarChart ${title}:`, { 
+    originalValue: value, 
+    originalMaxValue: maxValue,
+    safeValue, 
+    safeMaxValue,
+    valueType: typeof value,
+    maxValueType: typeof maxValue,
+    isValueNaN: isNaN(value),
+    isMaxValueNaN: isNaN(maxValue)
+  });
   
-  // Double-check that domain values are valid
-  const domainMax = !isNaN(safeMaxValue) && isFinite(safeMaxValue) ? safeMaxValue : 100;
-  
-  const data = [{ name: title, value: safeValue }];
+  const percentage = (safeValue / safeMaxValue) * 100;
   
   return (
     <div className="space-y-3">
@@ -35,19 +36,11 @@ export const HorizontalBarChart = ({
           {currency}{safeValue.toFixed(2)}
         </span>
       </div>
-      <div className="h-8">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart layout="horizontal" data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-            <XAxis type="number" domain={[0, domainMax]} hide />
-            <YAxis type="category" dataKey="name" hide />
-            <Bar 
-              dataKey="value" 
-              fill="hsl(var(--primary))" 
-              radius={4}
-              background={{ fill: "hsl(var(--muted))" }}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="h-8 bg-muted rounded-lg overflow-hidden">
+        <div 
+          className="h-full bg-primary rounded-lg transition-all duration-300"
+          style={{ width: `${Math.min(percentage, 100)}%` }}
+        />
       </div>
     </div>
   );

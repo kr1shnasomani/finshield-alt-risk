@@ -1,5 +1,3 @@
-import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts";
-
 interface VerticalBarChartProps {
   value: number;
   maxValue: number;
@@ -13,35 +11,30 @@ export const VerticalBarChart = ({
   title, 
   unit = "" 
 }: VerticalBarChartProps) => {
-  // Debug logging
-  console.log(`VerticalBarChart ${title}:`, { value, maxValue, isValueFinite: isFinite(value), isMaxFinite: isFinite(maxValue) });
-  
   // Comprehensive NaN protection
   const safeValue = (!isNaN(value) && isFinite(value) && value >= 0) ? value : 0;
   const safeMaxValue = (!isNaN(maxValue) && isFinite(maxValue) && maxValue > 0) ? maxValue : Math.max(100, safeValue * 2);
   
-  console.log(`VerticalBarChart ${title} safe values:`, { safeValue, safeMaxValue });
+  console.log(`VerticalBarChart ${title}:`, { 
+    originalValue: value, 
+    originalMaxValue: maxValue,
+    safeValue, 
+    safeMaxValue,
+    valueType: typeof value,
+    maxValueType: typeof maxValue,
+    isValueNaN: isNaN(value),
+    isMaxValueNaN: isNaN(maxValue)
+  });
   
-  // Double-check that domain values are valid
-  const domainMax = !isNaN(safeMaxValue) && isFinite(safeMaxValue) ? safeMaxValue : 100;
-  
-  const data = [{ name: title, value: safeValue }];
+  const percentage = (safeValue / safeMaxValue) * 100;
   
   return (
     <div className="flex flex-col items-center space-y-3">
-      <div className="h-24 w-16">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-            <XAxis dataKey="name" hide />
-            <YAxis domain={[0, domainMax]} hide />
-            <Bar 
-              dataKey="value" 
-              fill="hsl(var(--primary))" 
-              radius={4}
-              background={{ fill: "hsl(var(--muted))" }}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="h-24 w-16 bg-muted rounded-lg overflow-hidden flex flex-col justify-end">
+        <div 
+          className="w-full bg-primary rounded-lg transition-all duration-300"
+          style={{ height: `${Math.min(percentage, 100)}%` }}
+        />
       </div>
       <div className="text-center">
         <div className="text-lg font-semibold text-foreground">
