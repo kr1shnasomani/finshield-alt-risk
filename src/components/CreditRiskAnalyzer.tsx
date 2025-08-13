@@ -20,6 +20,9 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Upload, Sparkles, BarChart3 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { SpeedometerGauge } from "./charts/SpeedometerGauge";
+import { HorizontalBarChart } from "./charts/HorizontalBarChart";
+import { VerticalBarChart } from "./charts/VerticalBarChart";
 
 export type UserRow = Record<string, string | number | undefined> & {
   user_id?: string | number;
@@ -255,54 +258,57 @@ const CreditRiskAnalyzer = () => {
                   <Progress value={pdScore} className="h-3" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-lg border p-4">
-                    <div className="text-sm text-muted-foreground mb-1">Financial Habits</div>
-                    <div className="space-y-1 text-sm">
-                      <div>
-                        Payment Delay Ratio: {
-                          typeof selectedRow?.payment_delay_ratio === "number"
-                            ? `${(selectedRow!.payment_delay_ratio! * 100).toFixed(1)}%`
-                            : "—"
-                        }
-                      </div>
-                      <div>
-                        Avg. Recharge Amount: {
-                          typeof selectedRow?.avg_recharge_amt === "number"
-                            ? `₹${selectedRow!.avg_recharge_amt!.toFixed(2)}`
-                            : "—"
-                        }
-                      </div>
-                      <div>
-                        Avg. Order Value: {
-                          typeof selectedRow?.avg_order_value === "number"
-                            ? `₹${selectedRow!.avg_order_value!.toFixed(2)}`
-                            : "—"
-                        }
-                      </div>
+                <div className="space-y-6">
+                  {/* Speedometer Gauges Section */}
+                  <div className="rounded-lg border p-6 bg-gradient-subtle">
+                    <h3 className="text-lg font-semibold mb-4 text-center">Risk Indicators</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <SpeedometerGauge
+                        value={selectedRow?.payment_delay_ratio ?? 0}
+                        max={1}
+                        title="Payment Delay Ratio"
+                        unit="%"
+                      />
+                      <SpeedometerGauge
+                        value={selectedRow?.cart_abandonment_rate ?? 0}
+                        max={1}
+                        title="Cart Abandonment Rate"
+                        unit="%"
+                      />
+                      <SpeedometerGauge
+                        value={selectedRow?.geo_variance_score ?? 0}
+                        max={10}
+                        title="Geo-variance Score"
+                        unit=""
+                      />
                     </div>
                   </div>
 
-                  <div className="rounded-lg border p-4">
-                    <div className="text-sm text-muted-foreground mb-1">Behavioral & Stability</div>
-                    <div className="space-y-1 text-sm">
-                      <div>
-                        Cart Abandonment Rate: {
-                          typeof selectedRow?.cart_abandonment_rate === "number"
-                            ? `${(selectedRow!.cart_abandonment_rate! * 100).toFixed(1)}%`
-                            : "—"
-                        }
-                      </div>
-                      <div>
-                        Geo-variance Score: {
-                          typeof selectedRow?.geo_variance_score === "number"
-                            ? selectedRow!.geo_variance_score!.toFixed(2)
-                            : "—"
-                        }
-                      </div>
-                      <div>
-                        Months Active (Employment): {selectedRow?.months_active ?? "—"}
-                      </div>
+                  {/* Bar Charts Section */}
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="rounded-lg border p-4 bg-card">
+                      <HorizontalBarChart
+                        value={selectedRow?.avg_recharge_amt ?? 0}
+                        maxValue={Math.max(1000, (selectedRow?.avg_recharge_amt ?? 0) * 1.5)}
+                        title="Avg. Recharge Amount"
+                      />
+                    </div>
+                    
+                    <div className="rounded-lg border p-4 bg-card">
+                      <HorizontalBarChart
+                        value={selectedRow?.avg_order_value ?? 0}
+                        maxValue={Math.max(2000, (selectedRow?.avg_order_value ?? 0) * 1.5)}
+                        title="Avg. Order Value"
+                      />
+                    </div>
+
+                    <div className="rounded-lg border p-4 bg-card flex justify-center">
+                      <VerticalBarChart
+                        value={selectedRow?.months_active ?? 0}
+                        maxValue={Math.max(24, (selectedRow?.months_active ?? 0) * 1.5)}
+                        title="Months Active"
+                        unit=" months"
+                      />
                     </div>
                   </div>
                 </div>
