@@ -277,31 +277,28 @@ const CreditRiskAnalyzer = () => {
                   </div>
                 </div>
 
-                {/* Risk Indicators Speedometers */}
-                <div className="rounded-2xl border bg-gradient-to-br from-background to-muted/20 p-8 shadow-lg">
-                  <h3 className="text-xl font-semibold mb-6 text-center">Risk Indicators</h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <DashboardSpeedometer
-                      value={toNumber(selectedRow.payment_delay_ratio)}
-                      max={1}
-                      title="Payment Delay Ratio"
-                      unit="%"
-                      size={160}
-                    />
-                    <DashboardSpeedometer
-                      value={toNumber(selectedRow.cart_abandonment_rate)}
-                      max={1}
-                      title="Cart Abandonment Rate"
-                      unit="%"
-                      size={160}
-                    />
-                    <DashboardSpeedometer
-                      value={toNumber(selectedRow.geo_variance_score)}
-                      max={1}
-                      title="Geo-variance Score"
-                      unit=""
-                      size={160}
-                    />
+                {/* Key Behavioral Markers */}
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-center">Key Behavioral Markers</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl font-bold text-foreground">
+                        {(toNumber(selectedRow.payment_delay_ratio) * 100).toFixed(1)}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">Payment Delay Ratio</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl font-bold text-foreground">
+                        {(toNumber(selectedRow.cart_abandonment_rate) * 100).toFixed(1)}%
+                      </div>
+                      <div className="text-sm text-muted-foreground">Cart Abandonment Rate</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl font-bold text-foreground">
+                        {toNumber(selectedRow.geo_variance_score).toFixed(2)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Geo-variance Score</div>
+                    </div>
                   </div>
                 </div>
 
