@@ -70,15 +70,15 @@ const demoData: UserRow[] = [
   },
 ];
 
-function toNumber(v: unknown): number | undefined {
-  if (v == null) return undefined;
-  if (typeof v === "number") return isFinite(v) ? v : undefined;
+function toNumber(v: unknown): number {
+  if (v == null) return 0;
+  if (typeof v === "number") return isFinite(v) ? v : 0;
   if (typeof v === "string") {
     const s = v.trim().replace(/[%₹,$]/g, "");
     const n = Number(s);
-    return isFinite(n) ? n : undefined;
+    return isFinite(n) ? n : 0;
   }
-  return undefined;
+  return 0;
 }
 
 function clamp(n: number, min: number, max: number) {
@@ -264,19 +264,19 @@ const CreditRiskAnalyzer = () => {
                     <h3 className="text-lg font-semibold mb-4 text-center">Risk Indicators</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <SpeedometerGauge
-                        value={toNumber(selectedRow.payment_delay_ratio) ?? 0}
+                        value={toNumber(selectedRow.payment_delay_ratio)}
                         max={1}
                         title="Payment Delay Ratio"
                         unit="%"
                       />
                       <SpeedometerGauge
-                        value={toNumber(selectedRow.cart_abandonment_rate) ?? 0}
+                        value={toNumber(selectedRow.cart_abandonment_rate)}
                         max={1}
                         title="Cart Abandonment Rate"
                         unit="%"
                       />
                       <SpeedometerGauge
-                        value={toNumber(selectedRow.geo_variance_score) ?? 0}
+                        value={toNumber(selectedRow.geo_variance_score)}
                         max={10}
                         title="Geo-variance Score"
                         unit=""
@@ -288,24 +288,24 @@ const CreditRiskAnalyzer = () => {
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="rounded-lg border p-4 bg-card">
                       <HorizontalBarChart
-                        value={toNumber(selectedRow.avg_recharge_amt) ?? 0}
-                        maxValue={Math.max(1000, (toNumber(selectedRow.avg_recharge_amt) ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.avg_recharge_amt)}
+                        maxValue={Math.max(1000, toNumber(selectedRow.avg_recharge_amt) * 1.5)}
                         title="Avg. Recharge Amount"
                       />
                     </div>
                     
                     <div className="rounded-lg border p-4 bg-card">
                       <HorizontalBarChart
-                        value={toNumber(selectedRow.avg_order_value) ?? 0}
-                        maxValue={Math.max(2000, (toNumber(selectedRow.avg_order_value) ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.avg_order_value)}
+                        maxValue={Math.max(2000, toNumber(selectedRow.avg_order_value) * 1.5)}
                         title="Avg. Order Value"
                       />
                     </div>
 
                     <div className="rounded-lg border p-4 bg-card flex justify-center">
                       <VerticalBarChart
-                        value={toNumber(selectedRow.months_active) ?? 0}
-                        maxValue={Math.max(24, (toNumber(selectedRow.months_active) ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.months_active)}
+                        maxValue={Math.max(24, toNumber(selectedRow.months_active) * 1.5)}
                         title="Months Active"
                         unit=" months"
                       />
