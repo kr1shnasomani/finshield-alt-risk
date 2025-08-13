@@ -20,7 +20,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Upload, Sparkles, BarChart3 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { SpeedometerGauge } from "./charts/SpeedometerGauge";
+import { DashboardSpeedometer } from "./charts/DashboardSpeedometer";
 import { HorizontalBarChart } from "./charts/HorizontalBarChart";
 import { VerticalBarChart } from "./charts/VerticalBarChart";
 
@@ -253,69 +253,116 @@ const CreditRiskAnalyzer = () => {
                 Load data and select a user to see their risk profile.
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="text-lg font-medium">Probability of Default</div>
-                    {risk && (
-                      <Badge variant={risk.tone as any}>{risk.label}</Badge>
-                    )}
+              <div className="space-y-8 animate-fade-in">
+                {/* Main Dashboard Header with PD Score */}
+                <div className="text-center space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold">Risk Assessment Dashboard</h2>
+                    <div className="flex items-center justify-center gap-4">
+                      <div className="text-5xl font-bold text-foreground">{pdScore.toFixed(1)}%</div>
+                      {risk && (
+                        <Badge 
+                          variant={risk.tone as any}
+                          className={`text-lg px-4 py-2 ${
+                            risk.tone === 'secondary' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
+                            risk.tone === 'destructive' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100' :
+                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'
+                          }`}
+                        >
+                          {risk.label}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-lg text-muted-foreground">Probability of Default</p>
                   </div>
-                  <div className="text-3xl font-semibold">{pdScore.toFixed(2)}%</div>
-                  <Progress value={pdScore} className="h-3" />
                 </div>
 
-                <div className="space-y-6">
-                  {/* Speedometer Gauges Section */}
-                  <div className="rounded-lg border p-6 bg-gradient-subtle">
-                    <h3 className="text-lg font-semibold mb-4 text-center">Risk Indicators</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <SpeedometerGauge
-                        value={toNumber(selectedRow.payment_delay_ratio)}
-                        max={1}
-                        title="Payment Delay Ratio"
-                        unit="%"
-                      />
-                      <SpeedometerGauge
-                        value={toNumber(selectedRow.cart_abandonment_rate)}
-                        max={1}
-                        title="Cart Abandonment Rate"
-                        unit="%"
-                      />
-                      <SpeedometerGauge
-                        value={toNumber(selectedRow.geo_variance_score)}
-                        max={10}
-                        title="Geo-variance Score"
-                        unit=""
-                      />
+                {/* Risk Indicators Speedometers */}
+                <div className="rounded-2xl border bg-gradient-to-br from-background to-muted/20 p-8 shadow-lg">
+                  <h3 className="text-xl font-semibold mb-6 text-center">Risk Indicators</h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <DashboardSpeedometer
+                      value={toNumber(selectedRow.payment_delay_ratio)}
+                      max={1}
+                      title="Payment Delay Ratio"
+                      unit="%"
+                      size={160}
+                    />
+                    <DashboardSpeedometer
+                      value={toNumber(selectedRow.cart_abandonment_rate)}
+                      max={1}
+                      title="Cart Abandonment Rate"
+                      unit="%"
+                      size={160}
+                    />
+                    <DashboardSpeedometer
+                      value={toNumber(selectedRow.geo_variance_score)}
+                      max={10}
+                      title="Geo-variance Score"
+                      unit=""
+                      size={160}
+                    />
+                  </div>
+                </div>
+
+                {/* User Metrics Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="rounded-xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-muted-foreground">Avg. Recharge Amount</span>
+                        <span className="text-2xl font-bold text-primary">
+                          ₹{toNumber(selectedRow.avg_recharge_amt).toFixed(0)}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                          style={{ 
+                            width: `${Math.min((toNumber(selectedRow.avg_recharge_amt) / Math.max(1000, toNumber(selectedRow.avg_recharge_amt) * 1.5)) * 100, 100)}%` 
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="rounded-xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-muted-foreground">Avg. Order Value</span>
+                        <span className="text-2xl font-bold text-primary">
+                          ₹{toNumber(selectedRow.avg_order_value).toFixed(0)}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full transition-all duration-500"
+                          style={{ 
+                            width: `${Math.min((toNumber(selectedRow.avg_order_value) / Math.max(2000, toNumber(selectedRow.avg_order_value) * 1.5)) * 100, 100)}%` 
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Bar Charts Section */}
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="rounded-lg border p-4 bg-card">
-                      <HorizontalBarChart
-                        value={toNumber(selectedRow.avg_recharge_amt)}
-                        maxValue={Math.max(1000, toNumber(selectedRow.avg_recharge_amt) * 1.5)}
-                        title="Avg. Recharge Amount"
-                      />
-                    </div>
-                    
-                    <div className="rounded-lg border p-4 bg-card">
-                      <HorizontalBarChart
-                        value={toNumber(selectedRow.avg_order_value)}
-                        maxValue={Math.max(2000, toNumber(selectedRow.avg_order_value) * 1.5)}
-                        title="Avg. Order Value"
-                      />
-                    </div>
-
-                    <div className="rounded-lg border p-4 bg-card flex justify-center">
-                      <VerticalBarChart
-                        value={toNumber(selectedRow.months_active)}
-                        maxValue={Math.max(24, toNumber(selectedRow.months_active) * 1.5)}
-                        title="Months Active"
-                        unit=" months"
-                      />
+                  <div className="rounded-xl border bg-card p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-muted-foreground">Months Active</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {toNumber(selectedRow.months_active)} months
+                        </span>
+                      </div>
+                      <div className="flex justify-center">
+                        <div className="h-20 w-8 bg-muted rounded-lg overflow-hidden flex flex-col justify-end">
+                          <div 
+                            className="w-full bg-gradient-to-t from-primary to-primary/80 rounded-lg transition-all duration-500"
+                            style={{ 
+                              height: `${Math.min((toNumber(selectedRow.months_active) / Math.max(24, toNumber(selectedRow.months_active) * 1.5)) * 100, 100)}%` 
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
