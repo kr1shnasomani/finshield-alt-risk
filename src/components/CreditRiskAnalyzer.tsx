@@ -241,7 +241,7 @@ const CreditRiskAnalyzer = () => {
 
             <Separator />
 
-            {pdScore == null ? (
+            {pdScore == null || !selectedRow ? (
               <div className="text-center py-8 text-muted-foreground">
                 Load data and select a user to see their risk profile.
               </div>
@@ -264,19 +264,19 @@ const CreditRiskAnalyzer = () => {
                     <h3 className="text-lg font-semibold mb-4 text-center">Risk Indicators</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <SpeedometerGauge
-                        value={selectedRow?.payment_delay_ratio ?? 0}
+                        value={toNumber(selectedRow.payment_delay_ratio) ?? 0}
                         max={1}
                         title="Payment Delay Ratio"
                         unit="%"
                       />
                       <SpeedometerGauge
-                        value={selectedRow?.cart_abandonment_rate ?? 0}
+                        value={toNumber(selectedRow.cart_abandonment_rate) ?? 0}
                         max={1}
                         title="Cart Abandonment Rate"
                         unit="%"
                       />
                       <SpeedometerGauge
-                        value={selectedRow?.geo_variance_score ?? 0}
+                        value={toNumber(selectedRow.geo_variance_score) ?? 0}
                         max={10}
                         title="Geo-variance Score"
                         unit=""
@@ -288,24 +288,24 @@ const CreditRiskAnalyzer = () => {
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="rounded-lg border p-4 bg-card">
                       <HorizontalBarChart
-                        value={selectedRow?.avg_recharge_amt ?? 0}
-                        maxValue={Math.max(1000, (selectedRow?.avg_recharge_amt ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.avg_recharge_amt) ?? 0}
+                        maxValue={Math.max(1000, (toNumber(selectedRow.avg_recharge_amt) ?? 0) * 1.5)}
                         title="Avg. Recharge Amount"
                       />
                     </div>
                     
                     <div className="rounded-lg border p-4 bg-card">
                       <HorizontalBarChart
-                        value={selectedRow?.avg_order_value ?? 0}
-                        maxValue={Math.max(2000, (selectedRow?.avg_order_value ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.avg_order_value) ?? 0}
+                        maxValue={Math.max(2000, (toNumber(selectedRow.avg_order_value) ?? 0) * 1.5)}
                         title="Avg. Order Value"
                       />
                     </div>
 
                     <div className="rounded-lg border p-4 bg-card flex justify-center">
                       <VerticalBarChart
-                        value={selectedRow?.months_active ?? 0}
-                        maxValue={Math.max(24, (selectedRow?.months_active ?? 0) * 1.5)}
+                        value={toNumber(selectedRow.months_active) ?? 0}
+                        maxValue={Math.max(24, (toNumber(selectedRow.months_active) ?? 0) * 1.5)}
                         title="Months Active"
                         unit=" months"
                       />
