@@ -16,18 +16,27 @@ export const SpeedometerGauge = ({
   unit = "%", 
   size = 120 
 }: SpeedometerGaugeProps) => {
+  // Debug logging
+  console.log(`SpeedometerGauge ${title}:`, { value, max, isValueFinite: isFinite(value), isMaxFinite: isFinite(max) });
+  
   const data = useMemo(() => {
-    // Ensure values are valid numbers
-    const safeValue = isFinite(value) ? value : 0;
-    const safeMax = isFinite(max) && max > 0 ? max : 1;
+    // Comprehensive NaN protection
+    const safeValue = (!isNaN(value) && isFinite(value) && value >= 0) ? value : 0;
+    const safeMax = (!isNaN(max) && isFinite(max) && max > 0) ? max : 1;
     const percentage = Math.min((safeValue / safeMax) * 100, 100);
+    
+    console.log(`SpeedometerGauge ${title} calculation:`, { safeValue, safeMax, percentage });
+    
+    // Ensure percentage is a valid number
+    const safePercentage = (!isNaN(percentage) && isFinite(percentage)) ? percentage : 0;
+    
     return [
-      { value: percentage, fill: "hsl(var(--primary))" },
-      { value: 100 - percentage, fill: "hsl(var(--muted))" }
+      { value: safePercentage, fill: "hsl(var(--primary))" },
+      { value: 100 - safePercentage, fill: "hsl(var(--muted))" }
     ];
-  }, [value, max]);
+  }, [value, max, title]);
 
-  const safeValue = isFinite(value) ? value : 0;
+  const safeValue = (!isNaN(value) && isFinite(value)) ? value : 0;
   const displayValue = unit === "%" ? (safeValue * 100).toFixed(1) : safeValue.toFixed(2);
   
   return (

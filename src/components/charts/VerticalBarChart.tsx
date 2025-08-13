@@ -13,10 +13,19 @@ export const VerticalBarChart = ({
   title, 
   unit = "" 
 }: VerticalBarChartProps) => {
-  // Ensure values are valid numbers
-  const safeValue = isFinite(value) ? value : 0;
-  const safeMaxValue = isFinite(maxValue) && maxValue > 0 ? maxValue : 100;
-  const data = [{ name: title, value: safeValue, max: safeMaxValue }];
+  // Debug logging
+  console.log(`VerticalBarChart ${title}:`, { value, maxValue, isValueFinite: isFinite(value), isMaxFinite: isFinite(maxValue) });
+  
+  // Comprehensive NaN protection
+  const safeValue = (!isNaN(value) && isFinite(value) && value >= 0) ? value : 0;
+  const safeMaxValue = (!isNaN(maxValue) && isFinite(maxValue) && maxValue > 0) ? maxValue : Math.max(100, safeValue * 2);
+  
+  console.log(`VerticalBarChart ${title} safe values:`, { safeValue, safeMaxValue });
+  
+  // Double-check that domain values are valid
+  const domainMax = !isNaN(safeMaxValue) && isFinite(safeMaxValue) ? safeMaxValue : 100;
+  
+  const data = [{ name: title, value: safeValue }];
   
   return (
     <div className="flex flex-col items-center space-y-3">
@@ -24,7 +33,7 @@ export const VerticalBarChart = ({
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <XAxis dataKey="name" hide />
-            <YAxis domain={[0, safeMaxValue]} hide />
+            <YAxis domain={[0, domainMax]} hide />
             <Bar 
               dataKey="value" 
               fill="hsl(var(--primary))" 
