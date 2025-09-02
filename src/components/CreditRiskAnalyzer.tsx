@@ -18,7 +18,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Upload, Sparkles, BarChart3 } from "lucide-react";
+import { Upload, Sparkles, BarChart3, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { toast } from "@/hooks/use-toast";
 import { DashboardSpeedometer } from "./charts/DashboardSpeedometer";
 import { HorizontalBarChart } from "./charts/HorizontalBarChart";
@@ -189,6 +190,30 @@ const CreditRiskAnalyzer = () => {
     toast({ title: "Demo data loaded", description: `${demoData.length} demo users available.` });
   };
 
+  const downloadExcel = () => {
+    if (rows.length === 0) {
+      toast({ title: "No data to download", description: "Please upload or load demo data first.", variant: "destructive" as any });
+      return;
+    }
+
+    // Create updated data with PD scores in default_flag column
+    const updatedData = rows.map(row => ({
+      ...row,
+      default_flag: computePD(row, stats) / 100 // Convert percentage back to decimal for default_flag
+    }));
+
+    // Convert to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(updatedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Risk Analysis");
+
+    // Download file
+    const fileName = `risk_analysis_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+
+    toast({ title: "Excel downloaded", description: `${updatedData.length} rows exported with PD scores.` });
+  };
+
   const risk = pdScore != null ? category(pdScore) : null;
 
   return (
@@ -225,6 +250,14 @@ const CreditRiskAnalyzer = () => {
               </Button>
               <Button variant="secondary" onClick={loadDemo} className="w-full md:w-auto">
                 <Sparkles className="mr-2" size={16} /> Load Demo Data
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={downloadExcel} 
+                className="w-full md:w-auto"
+                disabled={rows.length === 0}
+              >
+                <Download className="mr-2" size={16} /> Download Excel
               </Button>
               <div className="flex-1" />
               <div className="w-full md:w-72">
