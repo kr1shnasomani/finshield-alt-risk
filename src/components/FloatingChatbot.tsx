@@ -25,6 +25,20 @@ export default function FloatingChatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
 
+  const getHardcodedResponse = (userText: string): string | null => {
+    const lowerText = userText.toLowerCase();
+    
+    if (lowerText.includes("default probability is high") && lowerText.includes("what can i do")) {
+      return "When a user's default probability is high, consider these actions:\n\n1. Request additional verification documents\n2. Offer a lower credit limit initially\n3. Require a co-signer or guarantor\n4. Implement stricter monitoring and payment reminders\n5. Consider alternative payment plans or shorter loan terms\n6. Evaluate if manual underwriting review is needed\n\nYou can also check their recent transaction patterns and employment stability for more context.";
+    }
+    
+    if (lowerText.includes("employment_type") && lowerText.includes("mean")) {
+      return "The 'employment_type' field indicates the user's job category, which is crucial for credit risk assessment:\n\n• **Salaried**: Regular monthly income, generally lower risk\n• **Self-employed**: Variable income, higher risk due to income fluctuation\n• **Business Owner**: Income depends on business performance, moderate to high risk\n• **Freelancer**: Irregular income pattern, higher risk\n• **Unemployed**: No steady income, highest risk\n• **Retired**: Fixed pension/savings, low to moderate risk\n\nThis field helps predict payment consistency and default probability based on income stability.";
+    }
+    
+    return null;
+  };
+
   const sendMessage = () => {
     if (!inputValue.trim()) return;
 
@@ -36,13 +50,17 @@ export default function FloatingChatbot() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputValue;
     setInputValue('');
 
+    // Check for hardcoded responses first
+    const hardcodedResponse = getHardcodedResponse(currentInput);
+    
     // Simulate bot response
     setTimeout(() => {
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Thank you for your question. This is a demo chatbot. In a real implementation, this would connect to your AI assistant or support system.',
+        text: hardcodedResponse || 'Thank you for your question. I can help you with credit risk analysis questions. Try asking about high default probability actions or field meanings!',
         sender: 'bot',
         timestamp: new Date()
       };
