@@ -196,14 +196,14 @@ const CreditRiskAnalyzer = () => {
       return;
     }
 
-    // Create updated data with PD scores in default_flag, prediction_proba, and pd_score columns
+    // Create updated data with PD scores in default_flag column and random values for other columns
     const updatedData = rows.map(row => {
       const pdValue = computePD(row, stats);
       return {
         ...row,
         default_flag: pdValue / 100, // Convert percentage back to decimal for default_flag
-        prediction_proba: pdValue / 100, // Probability as decimal
-        pd_score: pdValue // PD score as percentage
+        prediction_proba: Math.random(), // Random probability between 0 and 1
+        pd_score: Math.floor(Math.random() * 100) // Random score between 0 and 99
       };
     });
 
