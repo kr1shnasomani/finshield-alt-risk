@@ -282,31 +282,19 @@ const CreditRiskAnalyzer = () => {
                   <h3 className="text-xl font-semibold text-center">Key Behavioral Markers</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="text-center space-y-2">
-                      <div className={`text-2xl font-bold px-4 py-2 rounded-lg ${
-                        toNumber(selectedRow.payment_delay_ratio) <= 0.33 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
-                        toNumber(selectedRow.payment_delay_ratio) <= 0.66 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100' :
-                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'
-                      }`}>
+                      <div className="text-2xl font-bold text-foreground">
                         {(toNumber(selectedRow.payment_delay_ratio) * 100).toFixed(1)}%
                       </div>
                       <div className="text-sm text-muted-foreground">Payment Delay Ratio</div>
                     </div>
                     <div className="text-center space-y-2">
-                      <div className={`text-2xl font-bold px-4 py-2 rounded-lg ${
-                        toNumber(selectedRow.cart_abandonment_rate) <= 0.33 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
-                        toNumber(selectedRow.cart_abandonment_rate) <= 0.66 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100' :
-                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'
-                      }`}>
+                      <div className="text-2xl font-bold text-foreground">
                         {(toNumber(selectedRow.cart_abandonment_rate) * 100).toFixed(1)}%
                       </div>
                       <div className="text-sm text-muted-foreground">Cart Abandonment Rate</div>
                     </div>
                     <div className="text-center space-y-2">
-                      <div className={`text-2xl font-bold px-4 py-2 rounded-lg ${
-                        toNumber(selectedRow.geo_variance_score) <= 0.33 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
-                        toNumber(selectedRow.geo_variance_score) <= 0.66 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100' :
-                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'
-                      }`}>
+                      <div className="text-2xl font-bold text-foreground">
                         {toNumber(selectedRow.geo_variance_score).toFixed(2)}
                       </div>
                       <div className="text-sm text-muted-foreground">Geo-variance Score</div>
