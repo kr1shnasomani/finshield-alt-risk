@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import CreditRiskAnalyzer from "@/components/CreditRiskAnalyzer";
+import FloatingChatbot from "@/components/FloatingChatbot";
 import { useEffect } from "react";
 
 const Index = () => {
@@ -25,6 +26,7 @@ const Index = () => {
           </p>
         </div>
       </section>
+      <FloatingChatbot />
     </main>
   );
 };
