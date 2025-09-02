@@ -80,7 +80,7 @@ export default function FloatingChatbot() {
           <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
-              <span className="font-medium">Finshield Assistant</span>
+              <span className="font-medium">CreditWise Assistant</span>
             </div>
             <div className="flex items-center gap-1">
               <Button
